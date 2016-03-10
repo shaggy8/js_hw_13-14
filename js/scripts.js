@@ -1,6 +1,6 @@
 jQuery(function () {
 	'use strict'
-	var madTest = {
+	var originTest = {
 		'test1': {
 			'question': 'На клавіатурі кнопки тиснемо, а на екрані\
 					нічого не відбувається. Що зробили не так?',
@@ -25,27 +25,48 @@ jQuery(function () {
 		},
 	};
 
-	localStorage['madTest'] = JSON.stringify(madTest);
+	localStorage['madTest'] = JSON.stringify(originTest);
+	var test = JSON.parse(localStorage['madTest']);
+	var rightAnswers = getRightAnswers();
 	
 	writeTest();
-console.log($('input:checked').parent())
+	getRightAnswers();
+	$('input[type=submit]').click(checkResults);
 
 	function getTest() {
-		var obj = JSON.parse(localStorage['madTest']);
-		for (var key in obj) {
-			obj[key]['answers'] = obj[key]['answers'].sort(function() {
+		for (var key in test) {
+			test[key]['answers'] = test[key]['answers'].sort(function() {
 				return Math.random() - 0.5});
 		}
-		return obj;
+		return test;
 	};
 
-
 	function writeTest() {
-		$('ol').html(tmpl( 'madmadtest', {'test': getTest()} ));
+		$('ol').html(tmpl( 'madtest', {'test': getTest()} ));
 	}
 
 
-	function checkResults(argument) {
-		// body...
+	function getRightAnswers() {
+		var answers = [];
+		for (var key in test) {
+			answers = answers.concat(test[key]['rightAnswer']);
+		}
+		return answers;
+	}
+
+
+	function checkResults(event) {
+		event.preventDefault();
+		var val = 0;
+		var answers = $('input:checked').parent().text();
+		for (var i = 0; i < rightAnswers.length; i++) {
+
+			if (answers.indexOf(rightAnswers[i]) + 1) {
+				val++;
+			} else {
+				val--;
+			}
+		}
+console.log(val);
 	}
 });
