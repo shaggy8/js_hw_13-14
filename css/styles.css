@@ -1,0 +1,43 @@
+form {
+	width: 620px;
+	margin: 0 auto;
+}
+
+h1 {
+	font-family: Arial;
+	text-align: center;
+	font-size: 18px;
+}
+
+ol {
+	margin: 50px 0 0 0;
+	font-family: Arial;
+	font-size: 18px;
+}
+
+li {
+	margin: 20px 0px;
+}
+
+label {
+	display: block;
+	margin: 5px 0;
+	font-size: 16px;
+}
+
+input[type="checkbox"] {
+	margin: 0px 8px 0px 0px;
+	width: 18px;
+	height: 18px;
+}
+
+label:first-child>input[type="checkbox"] {
+	margin: 20px 8px 0px 0px;
+}
+
+input[type="submit"] {
+	margin: 50px 0px 0px 171px;
+	width: 330px;
+	height: 50px;
+	font-size: 18px;
+}
