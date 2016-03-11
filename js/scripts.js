@@ -4,34 +4,40 @@ jQuery(function () {
 		'test1': {
 			'question': 'На клавіатурі кнопки тиснемо, а на екрані\
 					нічого не відбувається. Що зробили не так?',
-			'answers': ['Вчора щось не те з\'їли', 'Не вмикнули комп\'ютера',
-					'Ананаси і єноти!!!'],
-			'rightAnswer': ['Не вмикнули комп\'ютера']
+			'answers': [
+				{'correct': 'Не вмикнули комп\'ютера'},
+				{'wrong': 'Вчора щось не те з\'їли'},
+				{'wrong': 'Ананаси і єноти!!!'}
+			]
 		},
 		'test2': {
 			'question': 'Вмикнули бравзера, а всі сайти якось\
 					дивно відображаються. Як виправити недолік?',
-			'answers': ['Під\'єднати інтернет',
-					'Не користуватися бравзерами Internet Explorer',
-					'Постукати по монітору'],
-			'rightAnswer': ['Під\'єднати інтернет',
-					'Не користуватися бравзерами Internet Explorer']
+			'answers': [
+				{'correct': 'Під\'єднати інтернет'},
+				{'correct': 'Не користуватися бравзерами Internet Explorer'},
+				{'wrong': 'Постукати по монітору'}
+			]
 		},
 		'test3': {
 			'question': 'На сайтах все шевелиться, анімується,\
 					змінює колір — це...',
-			'answers': ['хтось трясе твого монітора', 'класно!', 'javaScript'],
-			'rightAnswer': ['javaScript']
+			'answers': [
+				{'correct': 'javaScript'},
+				{'wrong': 'хтось трясе твого монітора'},
+				{'wrong': 'класно!'}
+			]
 		},
 	};
 
 	localStorage['madTest'] = JSON.stringify(originTest);
 	var test = JSON.parse(localStorage['madTest']);
-	var rightAnswers = getRightAnswers();
-	
+
+
 	writeTest();
-	getRightAnswers();
 	$('input[type=submit]').click(checkResults);
+	$('.modal').click(hideModal);
+
 
 	function getTest() {
 		for (var key in test) {
@@ -46,27 +52,45 @@ jQuery(function () {
 	}
 
 
-	function getRightAnswers() {
-		var answers = [];
-		for (var key in test) {
-			answers = answers.concat(test[key]['rightAnswer']);
-		}
-		return answers;
-	}
-
-
 	function checkResults(event) {
-		event.preventDefault();
 		var val = 0;
-		var answers = $('input:checked').parent().text();
-		for (var i = 0; i < rightAnswers.length; i++) {
+		var diagnos;
 
-			if (answers.indexOf(rightAnswers[i]) + 1) {
+		$('input:checked').each(function() {
+			if ($(this).attr('data-value') == 'correct') {
 				val++;
 			} else {
 				val--;
 			}
+		});
+
+		if (val == 4) {
+			diagnos = 'Ви маєте всі шанси стати програмістом!!!';
+		} else if (val == 3) {
+			diagnos = 'Ви трохи розбираєтесь у комп\'ютерах,\
+					але ви не програміст.';
+		} else if (0 < val && val < 3) {
+			diagnos = 'Шлях програміста вам не світить...';
+		} else if (val == 0) {
+			diagnos = 'От не треба клацати шо попало!';
+		} else {
+			diagnos = 'Ану геть від компа, доки щось не зламав!!!';
 		}
-console.log(val);
+
+		$('.modal-window-content').text(diagnos);
+		$('.modal').fadeIn(400, 'easeOutCubic');
+		$('.modal-window').css('margin-top', function() {
+			return $('.modal').height() / 2 - $('.modal-window').height();
+		});
+		event.preventDefault();
+	}
+
+
+	function hideModal(event) {
+		if ($(event.target).hasClass('close')) {
+			$('.modal').fadeOut(400, 'easeOutCubic');
+		}
+		writeTest();
+		event.preventDefault();
 	}
 });
